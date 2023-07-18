@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="title">คุณไม่มีสิทธิ์เข้าถึง API</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@200;300;400;500;600;700&family=Noto+Sans:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.7.0.js"></script>
+
+    <style>
+        * {
+            font-family: 'Noto Sans', sans-serif;
+            font-family: 'Noto Sans Thai', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-black fw-bold">WEB API V1 : <span class="text-primary fw-semibold">BY variz.h264</span></h1>
+        <hr>
+        <div id="dataContainer"></div>
+        <div id="unauthorizedMessage" style="display: none;">
+            <div class="card card-body border-0 shadow-sm">
+                <h3 class="text-danger">คุณไม่ได้รับอนุญาตให้เข้าถึง API</h3>
+                <h5 class="text-black-50">หากต้องการใช้ API ของเราโปรดติดต่อมาที่ xxxxx@xxxx.xxx</h5>
+                <h5 class="text-black-50">ถ้าไม่ถนัดในการใช้ Email ก็ยังสามารถติดต่อเรามาที่ Discord ได้ ชื่อสำหรับติดต่อ variz.h264</h5>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const apiurl = "http://localhost:3001/v1/setting/"
+        $(document).ready(function() {
+            const apiKey = '2ImyFNQKmhA3TmlqHNnfrgLqathxZcVL';
+            
+            $.ajax({
+                url: apiurl,
+                type: 'GET',
+                cache: true,
+                dataType: 'json',
+                headers: {
+                    'x-api-key': apiKey
+                },
+                success: function(res) {
+                    if (res.status) {
+                        displayData(res.data);
+                        head(res.data);
+                    } else {
+                        console.error('เกิดข้อผิดพลาดในการดึงข้อมูล:', res.message);
+                        showUnauthorizedMessage();
+                    }
+                },
+                error: function(xhr, status, error) {
+                    console.error('เกิดข้อผิดพลาดในการเรียกใช้ API:', error);
+                    showUnauthorizedMessage();
+                }
+            });
+        });
+        
+        function head(data) {
+            const head = $('#title');
+            head.empty();
+
+            data.forEach(function(item) {
+                $('#title').append(`${item.title} : API V1`)
+            })
+        }
+        function displayData(data) {
+            const container = $('#dataContainer');
+            container.empty();
+
+            data.forEach(function(item) {
+                const row = $('<div></div>');
+                row.append(`<h3>Title: ${item.title}</h3>`);
+                row.append(`<h3>Subtitle: ${item.subtitle}</h3>`);
+                row.append(`<h3>Description: ${item.description}</h3>`);
+                row.append('<hr>');
+
+                container.append(row);
+            });
+        }
+
+        function showUnauthorizedMessage() {
+            const unauthorizedMessage = $('#unauthorizedMessage');
+            unauthorizedMessage.show();
+        }
+    </script>
+</body>
+</html>
